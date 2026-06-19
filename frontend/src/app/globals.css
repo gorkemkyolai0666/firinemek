@@ -1,0 +1,85 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Playfair+Display:ital,wght@0,600;0,700;1,600&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --charcoal: #1a1a1a;
+  --charcoal-light: #2d2d2d;
+  --wheat: #e8d5b7;
+  --wheat-dark: #d4bc94;
+  --cream: #faf6ef;
+  --terracotta: #c45c3e;
+  --terracotta-light: #d97a5f;
+  --olive: #5c6b4a;
+  --success: #3d6b4f;
+  --warning: #b8860b;
+  --danger: #a63d2f;
+  --info: #4a6670;
+
+  --bg-primary: var(--cream);
+  --bg-secondary: #fffdf8;
+  --bg-nav: var(--charcoal);
+  --text-primary: var(--charcoal);
+  --text-muted: #6b6358;
+  --text-nav: var(--wheat);
+  --text-nav-muted: #a89880;
+  --border-color: #e5dcc8;
+  --accent: var(--terracotta);
+}
+
+.dark {
+  --bg-primary: #121110;
+  --bg-secondary: #1c1a18;
+  --bg-nav: #0a0908;
+  --text-primary: var(--wheat);
+  --text-muted: #9a9080;
+  --text-nav: var(--wheat);
+  --text-nav-muted: #7a7060;
+  --border-color: #3a3530;
+  --accent: var(--terracotta-light);
+}
+
+body {
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  font-family: 'DM Sans', system-ui, sans-serif;
+}
+
+.font-display {
+  font-family: 'Playfair Display', Georgia, serif;
+}
+
+.stat-card {
+  @apply rounded-xl p-4 flex flex-col gap-1;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+}
+
+.badge-success { @apply px-2 py-0.5 rounded text-xs font-medium; background: rgba(61, 107, 79, 0.15); color: var(--success); }
+.badge-warning { @apply px-2 py-0.5 rounded text-xs font-medium; background: rgba(184, 134, 11, 0.15); color: var(--warning); }
+.badge-danger { @apply px-2 py-0.5 rounded text-xs font-medium; background: rgba(166, 61, 47, 0.15); color: var(--danger); }
+.badge-info { @apply px-2 py-0.5 rounded text-xs font-medium; background: rgba(74, 102, 112, 0.15); color: var(--info); }
+.badge-gold { @apply px-2 py-0.5 rounded text-xs font-medium; background: rgba(196, 92, 62, 0.2); color: var(--terracotta); }
+
+.btn-primary {
+  @apply px-4 py-2 rounded-lg font-medium transition-colors;
+  background: var(--terracotta);
+  color: white;
+}
+.btn-primary:hover { background: var(--terracotta-light); }
+
+.input-field {
+  @apply w-full px-3 py-2 rounded-lg text-sm outline-none transition-colors;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  color: var(--text-primary);
+}
+.input-field:focus { border-color: var(--terracotta); }
+
+.card {
+  @apply rounded-xl p-5;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+}

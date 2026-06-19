@@ -1,0 +1,186 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Bakery {
+  id        String   @id @default(uuid())
+  name      String
+  address   String   @default("")
+  city      String   @default("")
+  district  String   @default("")
+  phone     String   @default("")
+  email     String   @default("")
+  taxNo     String   @default("")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  users              User[]
+  customers          Customer[]
+  productionBatches  ProductionBatch[]
+  orders             Order[]
+  recipes            Recipe[]
+  ingredients        Ingredient[]
+}
+
+model User {
+  id           String   @id @default(uuid())
+  email        String   @unique
+  passwordHash String
+  firstName    String
+  lastName     String
+  role         UserRole @default(baker)
+  specialty    String   @default("")
+  bakeryId     String
+  bakery       Bakery   @relation(fields: [bakeryId], references: [id])
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+enum UserRole {
+  admin
+  baker
+  sales
+  quality
+}
+
+model Customer {
+  id          String   @id @default(uuid())
+  companyName String
+  contactName String   @default("")
+  phone       String
+  email       String   @default("")
+  address     String   @default("")
+  city        String   @default("")
+  notes       String   @default("")
+  bakeryId    String
+  bakery      Bakery   @relation(fields: [bakeryId], references: [id])
+  productionBatches ProductionBatch[]
+  orders      Order[]
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+enum ProductionBatchType {
+  daily_bread
+  pastry_batch
+  special_order
+  trial
+  training
+}
+
+enum ProductionBatchStatus {
+  planned
+  in_progress
+  cooling
+  completed
+  cancelled
+}
+
+model ProductionBatch {
+  id            String                @id @default(uuid())
+  date          DateTime
+  duration      Int                   @default(60)
+  type          ProductionBatchType   @default(daily_bread)
+  status        ProductionBatchStatus @default(planned)
+  notes         String                @default("")
+  bakerName     String                @default("")
+  quantityUnits Int                   @default(50)
+  customerId    String
+  customer      Customer              @relation(fields: [customerId], references: [id])
+  bakeryId      String
+  bakery        Bakery                @relation(fields: [bakeryId], references: [id])
+  createdAt     DateTime              @default(now())
+  updatedAt     DateTime              @updatedAt
+}
+
+enum OrderStatus {
+  quoted
+  confirmed
+  baking
+  packed
+  delivered
+  cancelled
+}
+
+enum ProductCategory {
+  sourdough
+  white_bread
+  pastry
+  viennoiserie
+  special
+}
+
+model Order {
+  id              String          @id @default(uuid())
+  productName     String          @default("")
+  quantityUnits   Int             @default(50)
+  productCategory ProductCategory @default(white_bread)
+  status          OrderStatus     @default(quoted)
+  totalPrice      Float           @default(0)
+  paidAmount      Float           @default(0)
+  orderDate       DateTime
+  deliveryDate    DateTime?
+  notes           String          @default("")
+  customerId      String
+  customer        Customer        @relation(fields: [customerId], references: [id])
+  recipeId        String?
+  recipe          Recipe?         @relation(fields: [recipeId], references: [id])
+  bakeryId        String
+  bakery          Bakery          @relation(fields: [bakeryId], references: [id])
+  createdAt       DateTime        @default(now())
+  updatedAt       DateTime        @updatedAt
+}
+
+model Recipe {
+  id            String          @id @default(uuid())
+  name          String
+  flourType     String          @default("")
+  category      ProductCategory @default(white_bread)
+  hydrationPct  Int             @default(65)
+  fermentHours  Int             @default(12)
+  bakeTemp      Int             @default(220)
+  bakeMinutes   Int             @default(35)
+  description   String          @default("")
+  bakeryId      String
+  bakery        Bakery          @relation(fields: [bakeryId], references: [id])
+  orders        Order[]
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
+}
+
+enum IngredientCategory {
+  flour
+  dairy
+  yeast
+  sugar
+  grain
+  other
+}
+
+enum StorageType {
+  dry
+  refrigerated
+  frozen
+  ambient
+}
+
+model Ingredient {
+  id         String             @id @default(uuid())
+  name       String
+  category   IngredientCategory @default(other)
+  storage    StorageType        @default(dry)
+  stockKg    Float              @default(0)
+  unitCost   Float              @default(0)
+  supplier   String             @default("")
+  batchYear  Int                @default(2024)
+  notes      String             @default("")
+  bakeryId   String
+  bakery     Bakery             @relation(fields: [bakeryId], references: [id])
+  createdAt  DateTime           @default(now())
+  updatedAt  DateTime           @updatedAt
+}

@@ -1,0 +1,35 @@
+version: "3.8"
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: firinemek
+      POSTGRES_PASSWORD: firinemek123
+      POSTGRES_DB: firinemek
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+  backend:
+    build: ./backend
+    ports:
+      - "4540:4540"
+    environment:
+      DATABASE_URL: postgresql://firinemek:firinemek123@postgres:5432/firinemek?schema=public
+      JWT_SECRET: firinemek-dev-secret
+      FRONTEND_URL: http://localhost:3540
+      PORT: 4540
+    depends_on:
+      - postgres
+
+  frontend:
+    build: ./frontend
+    ports:
+      - "3540:3540"
+    environment:
+      NEXT_PUBLIC_API_URL: http://localhost:4540/api
+
+volumes:
+  pgdata:
